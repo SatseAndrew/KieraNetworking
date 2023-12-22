@@ -26,4 +26,3 @@ extension APIRequest where Response: Decodable {
         return response
     }
 }
-
