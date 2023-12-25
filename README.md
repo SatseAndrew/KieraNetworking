@@ -26,12 +26,26 @@ Add the following to your `Package.swift` file under `dependencies`:
 ## Quick Start Guide
 To make a GET request:
 ```swift
-let client = APIClient()
-let request = YourAPIRequest()
+// First, define a request
+struct GetTodoItemsRequest: APIRequest {
+    var urlRequest: URLRequest {
+        get throws { URLRequest.get(url: #URL("mycompany.org/api/todos")) }
+    }
+    typealias Response = [TodoItem]
+}
 
+// Then, define a client that subclasses APIClient
+class TodoClient {
+    func fetchTodos() async throws -> [TodoItem] {
+        try await load(request: GetTodoItemsRequest())
+    }
+}
+
+// Finally, invoke the method on the client
 Task {
     do {
-        let response: YourResponseType = try await client.load(request: request)
+        let client = TodoClient()
+        let todos = try await client.fetchTodos()
         // Handle response
     } catch {
         // Handle error
