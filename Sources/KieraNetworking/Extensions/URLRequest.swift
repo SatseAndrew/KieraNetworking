@@ -5,7 +5,8 @@ public extension URLRequest {
         url: URL,
         headers: [String: String] = [:],
         cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
-        timeoutInterval: TimeInterval = 20
+        timeoutInterval: TimeInterval = 20,
+        configuration: APIConfiguration = .shared
     ) -> URLRequest {
         var urlRequest = URLRequest(
             url: url,
@@ -14,7 +15,7 @@ public extension URLRequest {
         )
         
         urlRequest.httpMethod = "GET"
-        urlRequest.allHTTPHeaderFields = headers
+        urlRequest.allHTTPHeaderFields = merge(headers, using: configuration)
         return urlRequest
     }
     
@@ -23,7 +24,8 @@ public extension URLRequest {
         data: Data,
         headers: [String: String] = [:],
         cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
-        timeoutInterval: TimeInterval = 20
+        timeoutInterval: TimeInterval = 20,
+        configuration: APIConfiguration = .shared
     ) -> URLRequest {
         var urlRequest = URLRequest(
             url: url,
@@ -32,7 +34,7 @@ public extension URLRequest {
         )
         
         urlRequest.httpMethod = "POST"
-        urlRequest.allHTTPHeaderFields = headers
+        urlRequest.allHTTPHeaderFields = merge(headers, using: configuration)
         urlRequest.httpBody = data
         return urlRequest
     }
@@ -42,7 +44,8 @@ public extension URLRequest {
         data: Data,
         headers: [String: String] = [:],
         cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
-        timeoutInterval: TimeInterval = 20
+        timeoutInterval: TimeInterval = 20,
+        configuration: APIConfiguration = .shared
     ) -> URLRequest {
         var urlRequest = URLRequest(
             url: url,
@@ -51,7 +54,7 @@ public extension URLRequest {
         )
         
         urlRequest.httpMethod = "PUT"
-        urlRequest.allHTTPHeaderFields = headers
+        urlRequest.allHTTPHeaderFields = merge(headers, using: configuration)
         urlRequest.httpBody = data
         return urlRequest
     }
@@ -61,7 +64,8 @@ public extension URLRequest {
         data: Data,
         headers: [String: String] = [:],
         cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
-        timeoutInterval: TimeInterval = 20
+        timeoutInterval: TimeInterval = 20,
+        configuration: APIConfiguration = .shared
     ) -> URLRequest {
         var urlRequest = URLRequest(
             url: url,
@@ -70,7 +74,7 @@ public extension URLRequest {
         )
         
         urlRequest.httpMethod = "PATCH"
-        urlRequest.allHTTPHeaderFields = headers
+        urlRequest.allHTTPHeaderFields = merge(headers, using: configuration)
         urlRequest.httpBody = data
         return urlRequest
     }
@@ -80,7 +84,8 @@ public extension URLRequest {
         data: Data,
         headers: [String: String] = [:],
         cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
-        timeoutInterval: TimeInterval = 20
+        timeoutInterval: TimeInterval = 20,
+        configuration: APIConfiguration = .shared
     ) -> URLRequest {
         var urlRequest = URLRequest(
             url: url,
@@ -89,8 +94,17 @@ public extension URLRequest {
         )
         
         urlRequest.httpMethod = "DELETE"
-        urlRequest.allHTTPHeaderFields = headers
+        urlRequest.allHTTPHeaderFields = merge(headers, using: configuration)
         urlRequest.httpBody = data
         return urlRequest
+    }
+}
+
+extension URLRequest {
+    private static func merge(
+        _ headers: [String: String],
+        using configuration: APIConfiguration
+    ) -> [String: String] {
+        configuration.defaultHeaders.merging(headers) { (_, new) in new }
     }
 }
