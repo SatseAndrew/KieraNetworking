@@ -1,9 +1,9 @@
 import Foundation
 
 public class APIConfiguration {
-    var defaultHeaders: [String: String]
-    var jsonEncoder: JSONEncoder
-    var jsonDecoder: JSONDecoder
+    public var defaultHeaders: [String: String]
+    public var jsonEncoder: JSONEncoder
+    public var jsonDecoder: JSONDecoder
     
     public init(
         defaultHeaders: [String : String],
