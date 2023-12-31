@@ -7,19 +7,19 @@ public protocol APIRequest {
     associatedtype Response
 }
 
-extension APIRequest where Response == Data {
+public extension APIRequest where Response == Data {
     func response(from data: Data) throws -> Response {
         data as Response
     }
 }
 
-extension APIRequest where Response == Void {
+public extension APIRequest where Response == Void {
     func response(from data: Data) throws -> Response {
         () as Response
     }
 }
 
-extension APIRequest where Response: Decodable {
+public extension APIRequest where Response: Decodable {
     func response(from data: Data) throws -> Response {
         let decoder = JSONDecoder()
         let response = try decoder.decode(Response.self, from: data)
