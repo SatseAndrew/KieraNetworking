@@ -13,8 +13,10 @@ open class APIClient {
         
         guard networkResponse.statusCode.isSuccess else {
             throw APIError.server(
-                statusCode: networkResponse.statusCode,
-                body: networkResponse.data
+                error: APIServerError(
+                    statusCode: networkResponse.statusCode,
+                    body: networkResponse.data
+                )
             )
         }
         
@@ -46,7 +48,7 @@ extension APIClient {
         do {
             return try request.urlRequest
         } catch {
-            throw APIError.createRequest(error: error)
+            throw APIError.encodeRequestBody(error: error)
         }
     }
     
@@ -57,7 +59,7 @@ extension APIClient {
         do {
             return try request.response(from: data)
         } catch {
-            throw APIError.decodeResponse(error: error)
+            throw APIError.decodeResponseBody(error: error)
         }
     }
 }

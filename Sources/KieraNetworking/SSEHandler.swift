@@ -44,7 +44,7 @@ extension SSEHandler {
         case .finished:
             eventSubject.send(completion: .finished)
         case let .failure(failure):
-            eventSubject.send(completion: .failure(.networking(error: failure)))
+            eventSubject.send(completion: .failure(.network(error: failure)))
         }
     }
     
@@ -55,21 +55,21 @@ extension SSEHandler {
     
     private func processBuffer() {
         guard
-            let eventStartRange = buffer.range(of: eventStart),
-            let eventEndRange = buffer.range(of: eventEnd)
+            let startRange = buffer.range(of: eventStart),
+            let endRange = buffer.range(of: eventEnd)
         else { return }
         
-        let eventData = buffer.subdata(in: eventStartRange.upperBound..<eventEndRange.lowerBound)
-        buffer.removeSubrange(0..<eventEndRange.upperBound)
+        let eventData = buffer.subdata(in: startRange.upperBound..<endRange.lowerBound)
+        buffer.removeSubrange(0..<endRange.upperBound)
         
         guard eventData != eventCompletion else { return }
         
         do {
             let event = try request.response(from: eventData)
             eventSubject.send(event)
-            logger.info("Event published")
+            logger.info("Server-Sent-Event published.")
         } catch {
-            logger.error("Decoding event failed with error: \(error.localizedDescription)")
+            logger.error("Decoding Server-Sent-Event failed with error: \(error.localizedDescription)")
         }
         
         processBuffer()
